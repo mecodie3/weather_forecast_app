@@ -1,0 +1,21 @@
+import requests
+
+API_KEY ="931f70f39aa9084b22ef2ae3bba0d2d7"
+
+def get_data(place,forecast_days=1,kind=None):
+    url=f"https://api.openweathermap.org/data/2.5/forecast?q={place}&appid={API_KEY}"
+    response = requests.get(url)
+    data = response.json()
+    filtered_data=data["list"]
+    nr_values = 8 * forecast_days
+    filtered_data = filtered_data[:nr_values]
+    #one of the options: temperature/sky
+    if kind == "Temperature":
+        filtered_data =[dicti["main"]["temp"] for dicti in filtered_data]
+    if kind == "Sky":
+        filtered_data=[dicti["weather"][0]["main"] for dicti in filtered_data]
+
+    return filtered_data
+
+if __name__=="__main__":
+    print(get_data(place="Tokyo",forecast_days=3,kind="Temperature"))
